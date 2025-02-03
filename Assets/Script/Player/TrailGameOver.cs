@@ -8,5 +8,9 @@ public class TrailGameOver : MonoBehaviour
         {
             Debug.Log("Check");
         }
+        if (other.tag == "Ground")
+        {
+            //gameObject.SetActive(false);
+        }
     }
 }
