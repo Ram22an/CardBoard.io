@@ -146,4 +146,105 @@ public class FillAlgorithm : MonoBehaviour
         fillArea.GetComponent<MeshFilter>().mesh = mesh;
         fillArea.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
     }
-}
+}//class
+
+
+//previous code
+//using System.Collections.Generic;
+//using Unity.VisualScripting;
+//using UnityEngine;
+//public class FillAlgorithm : MonoBehaviour
+//{
+//    [SerializeField] private TrailRenderer PlayerTail;
+//    private List<Vector2> trailPoints = new List<Vector2>();
+//    public void OnTriggerEnter(Collider other)
+//    {
+//        if (other.tag == "Player")
+//        {
+//            PlayerMovement.Instance.IsOutSide = false;
+//            PlayerTail.enabled = false;
+//            trailPoints = InfiniteTrailHandler.instance.GetPositions();
+//            CaptureTerritory();
+//        }
+//    }
+//    public void OnTriggerExit(Collider other)
+//    {
+//        if (other.tag == "Player")
+//        {
+//            PlayerMovement.Instance.IsOutSide = true;
+//            PlayerTail.enabled = true;
+//        }
+//    }
+//    private void CaptureTerritory()
+//    {
+//        if (trailPoints.Count < 3) return; // Convex hull needs at least 3 points
+
+//        List<Vector2> hull = GrahamScan(trailPoints);
+//        FillCapturedArea(hull);
+//    }
+
+//    private List<Vector2> GrahamScan(List<Vector2> points)
+//    {
+//        points.Sort((a, b) => a.y == b.y ? a.x.CompareTo(b.x) : a.y.CompareTo(b.y));
+//        Stack<Vector2> hull = new Stack<Vector2>();
+
+//        foreach (var point in points)
+//        {
+//            while (hull.Count >= 2 && CrossProduct(hull.ToArray()[hull.Count - 2], hull.Peek(), point) <= 0)
+//            {
+//                hull.Pop();
+//            }
+//            hull.Push(point);
+//        }
+
+//        int lowerCount = hull.Count;
+//        for (int i = points.Count - 2; i >= 0; i--)
+//        {
+//            while (hull.Count > lowerCount && CrossProduct(hull.ToArray()[hull.Count - 2], hull.Peek(), points[i]) <= 0)
+//            {
+//                hull.Pop();
+//            }
+//            hull.Push(points[i]);
+//        }
+
+//        hull.Pop(); // Remove duplicate last point
+//        return new List<Vector2>(hull);
+//    }
+
+//    private float CrossProduct(Vector2 a, Vector2 b, Vector2 c)
+//    {
+//        return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+//    }
+
+//    private void FillCapturedArea(List<Vector2> hull)
+//    {
+//        Mesh mesh = new Mesh();
+//        Vector3[] vertices = new Vector3[hull.Count];
+//        int[] triangles = new int[(hull.Count - 2) * 3];
+
+//        for (int i = 0; i < hull.Count; i++)
+//        {
+//            vertices[i] = new Vector3(hull[i].x, 0, hull[i].y);
+//            //vertices[i] = new Vector3(hull[i].x, 0, hull[i].y);
+//        }
+
+//        for (int i = 0; i < hull.Count - 2; i++)
+//        {
+//            //triangles[i * 3] = 0;
+//            //triangles[i * 3 + 1] = i + 1;
+//            //triangles[i * 3 + 2] = i + 2;
+//            triangles[i * 3] = 0;
+//            triangles[i * 3 + 1] = i + 2;
+//            triangles[i * 3 + 2] = i + 1;
+//        }
+
+//        mesh.vertices = vertices;
+//        mesh.triangles = triangles;
+//        mesh.RecalculateNormals();
+
+//        GameObject fillArea = new GameObject("CapturedArea", typeof(MeshFilter), typeof(MeshRenderer));
+//        fillArea.GetComponent<MeshFilter>().mesh = mesh;
+//        fillArea.GetComponent<MeshRenderer>().material = GetComponent<MeshRenderer>().material;
+//    }
+
+//}//class
